@@ -5,7 +5,15 @@ use web_sys::js_sys::Function;
 pub fn events() -> Result<(), JsValue> {
     let window = web_sys::window()?;
     let document = window.document()?;
-    let func = Function::new_no_args("");
-    document.add_event_listener_with_callback("click", &func)?;
-    Ok(())
+    let say_hello = Closure::wrap(Box::new(move || {
+        web_sys::console::log_2(&"Hello World Closures :%s".into(),
+                                &"WebAssemblyMan".into());
+        document
+            .get_element_by_id("counter")
+            .expect("should have a button on the page")
+            .dyn_ref::<web_sys::HtmlElement>()
+            .get(Some("Closures: Hello World"));
+
+    }) as Box);
 }
+
